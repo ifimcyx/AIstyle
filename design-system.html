@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI产品设计系统</title>
+    <style>
+        :root {
+            /* 颜色变量 */
+            --primary-100: #EBF5FF;
+            --primary-200: #BFDCFF;
+            --primary-300: #8FC2FF;
+            --primary-400: #5EA8FF;
+            --primary-500: #2E8EFA;
+            --primary-600: #0F73E5;
+            --primary-700: #0B5BBD;
+            --primary-800: #084595;
+            --primary-900: #053575;
+            
+            --neutral-100: #F8F9FA;
+            --neutral-200: #EDF0F2;
+            --neutral-300: #DDE2E6;
+            --neutral-400: #C6CDD5;
+            --neutral-500: #9AA4B2;
+            --neutral-600: #6D7A8C;
+            --neutral-700: #4E5969;
+            --neutral-800: #343E4D;
+            --neutral-900: #1D2530;
+            
+            --success-100: #E8F8EF;
+            --success-500: #10B981;
+            --success-700: #087751;
+            
+            --warning-100: #FFF7EB;
+            --warning-500: #FF9500;
+            --warning-700: #AD5700;
+            
+            --error-100: #FEECEB;
+            --error-500: #F53F3F;
+            --error-700: #A81A1A;
+            
+            /* 字体变量 */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            
+            /* 字体大小变量 */
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-md: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 30px;
+            --font-size-4xl: 36px;
+            
+            /* 间距变量 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px; 
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            
+            /* 圆角变量 */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* 阴影变量 */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            color: var(--neutral-900);
+            background-color: var(--neutral-100);
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+        
+        header {
+            background-color: white;
+            padding: var(--spacing-xl) 0;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        h1 {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: var(--font-size-2xl);
+            margin-top: var(--spacing-2xl);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 600;
+            border-bottom: 1px solid var(--neutral-300);
+            padding-bottom: var(--spacing-sm);
+        }
+        
+        h3 {
+            font-size: var(--font-size-xl);
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+        }
+        
+        p {
+            font-size: var(--font-size-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .color-item {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .color-preview {
+            height: 100px;
+        }
+        
+        .color-info {
+            padding: var(--spacing-sm);
+            background-color: white;
+        }
+        
+        .color-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .color-value {
+            font-family: monospace;
+            font-size: var(--font-size-sm);
+            color: var(--neutral-700);
+        }
+        
+        .typography-sample {
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .type-demo {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .type-info {
+            font-family: monospace;
+            font-size: var(--font-size-sm);
+            color: var(--neutral-700);
+            background-color: var(--neutral-200);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .component-card {
+            background-color: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .component-preview {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--neutral-300);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .component-info {
+            padding: var(--spacing-md);
+        }
+        
+        .component-name {
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .component-description {
+            font-size: var(--font-size-sm);
+            color: var(--neutral-700);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 var(--spacing-md);
+            height: 40px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-600);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+        }
+        
+        .btn-secondary {
+            background-color: var(--neutral-200);
+            color: var(--neutral-900);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--neutral-300);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-600);
+            border: 1px solid var(--primary-600);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-100);
+        }
+        
+        /* 输入框样式 */
+        .input {
+            height: 40px;
+            padding: 0 var(--spacing-md);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--neutral-400);
+            font-size: var(--font-size-sm);
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 3px var(--primary-200);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-lg);
+        }
+        
+        /* 消息框样式 */
+        .message {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .message-user {
+            background-color: var(--neutral-200);
+            align-self: flex-end;
+        }
+        
+        .message-ai {
+            background-color: var(--primary-100);
+            border-left: 3px solid var(--primary-600);
+        }
+        
+        .spacing-showcase {
+            background-color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .spacing-item {
+            background-color: var(--primary-200);
+            border: 1px dashed var(--primary-600);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .shadow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .shadow-item {
+            height: 100px;
+            background-color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        
+        footer {
+            background-color: var(--neutral-800);
+            color: white;
+            padding: var(--spacing-2xl) 0;
+            margin-top: var(--spacing-3xl);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>AI产品设计系统</h1>
+            <p>一套一致性、灵活性与可访问性兼具的设计系统，专为AI产品交互设计。</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section id="colors">
+            <h2>颜色系统</h2>
+            <p>我们的颜色系统遵循WCAG 2.1 AA标准，确保足够的对比度以提高可访问性。</p>
+            
+            <h3>主色调</h3>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-100);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 100</div>
+                        <div class="color-value">#EBF5FF</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-200);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 200</div>
+                        <div class="color-value">#BFDCFF</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-300);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 300</div>
+                        <div class="color-value">#8FC2FF</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-400);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 400</div>
+                        <div class="color-value">#5EA8FF</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-500);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 500</div>
+                        <div class="color-value">#2E8EFA</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-600);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 600</div>
+                        <div class="color-value">#0F73E5</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-700);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 700</div>
+                        <div class="color-value">#0B5BBD</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-800);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 800</div>
+                        <div class="color-value">#084595</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--primary-900);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Primary 900</div>
+                        <div class="color-value">#053575</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>中性色调</h3>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-100);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 100</div>
+                        <div class="color-value">#F8F9FA</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-200);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 200</div>
+                        <div class="color-value">#EDF0F2</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-300);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 300</div>
+                        <div class="color-value">#DDE2E6</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-400);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 400</div>
+                        <div class="color-value">#C6CDD5</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-500);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 500</div>
+                        <div class="color-value">#9AA4B2</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-600);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 600</div>
+                        <div class="color-value">#6D7A8C</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-700);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 700</div>
+                        <div class="color-value">#4E5969</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-800);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 800</div>
+                        <div class="color-value">#343E4D</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--neutral-900);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Neutral 900</div>
+                        <div class="color-value">#1D2530</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>状态色调</h3>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--success-100);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Success 100</div>
+                        <div class="color-value">#E8F8EF</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--success-500);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Success 500</div>
+                        <div class="color-value">#10B981</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--success-700);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Success 700</div>
+                        <div class="color-value">#087751</div>
+                    </div>
+                </div>
+                
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--warning-100);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Warning 100</div>
+                        <div class="color-value">#FFF7EB</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--warning-500);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Warning 500</div>
+                        <div class="color-value">#FF9500</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--warning-700);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Warning 700</div>
+                        <div class="color-value">#AD5700</div>
+                    </div>
+                </div>
+                
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--error-100);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Error 100</div>
+                        <div class="color-value">#FEECEB</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--error-500);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Error 500</div>
+                        <div class="color-value">#F53F3F</div>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-preview" style="background-color: var(--error-700);"></div>
+                    <div class="color-info">
+                        <div class="color-name">Error 700</div>
+                        <div class="color-value">#A81A1A</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="typography">
+            <h2>排版系统</h2>
+            <p>我们的排版系统采用清晰可读的字体，并通过一致的尺寸层级来建立信息层次结构。</p>
+            
+            <div class="typography-sample">
+                <div class="type-demo" style="font-size: var(--font-size-4xl); font-weight: 700;">
+                    标题 1
+                    <div class="type-info">字体大小: 36px (--font-size-4xl)，字重: 700</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-3xl); font-weight: 700;">
+                    标题 2
+                    <div class="type-info">字体大小: 30px (--font-size-3xl)，字重: 700</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-2xl); font-weight: 600;">
+                    标题 3
+                    <div class="type-info">字体大小: 24px (--font-size-2xl)，字重: 600</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-xl); font-weight: 600;">
+                    标题 4
+                    <div class="type-info">字体大小: 20px (--font-size-xl)，字重: 600</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-lg); font-weight: 500;">
+                    标题 5
+                    <div class="type-info">字体大小: 18px (--font-size-lg)，字重: 500</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-md);">
+                    正文文本 - 这是AI产品设计系统中的标准正文文本。它应该清晰可读，并具有良好的行间距。
+                    <div class="type-info">字体大小: 16px (--font-size-md)，字重: 400</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-sm);">
+                    小号文本 - 用于次要信息、注释和辅助文本。
+                    <div class="type-info">字体大小: 14px (--font-size-sm)，字重: 400</div>
+                </div>
+                
+                <div class="type-demo" style="font-size: var(--font-size-xs);">
+                    超小号文本 - 用于免责声明、版权信息等非重点内容。
+                    <div class="type-info">字体大小: 12px (--font-size-xs)，字重: 400</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="spacing">
+            <h2>间距系统</h2>
+            <p>一致的间距系统有助于创建和谐、有节奏的界面布局。</p>
+            
+            <div class="spacing-showcase">
+                <div class="spacing-item" style="height: var(--spacing-xs);">
+                    超小间距 (4px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-sm);">
+                    小间距 (8px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-md);">
+                    中间距 (16px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-lg);">
+                    大间距 (24px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-xl);">
+                    超大间距 (32px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-2xl);">
+                    2倍超大间距 (48px)
+                </div>
+                <div class="spacing-item" style="height: var(--spacing-3xl);">
+                    3倍超大间距 (64px)
+                </div>
+            </div>
+        </section>
+        
+        <section id="shadows">
+            <h2>阴影系统</h2>
+            <p>阴影帮助建立UI元素的层次结构和深度感。</p>
+            
+            <div class="shadow-grid">
+                <div class="shadow-item" style="box-shadow: var(--shadow-sm);">
+                    小阴影
+                </div>
+                <div class="shadow-item" style="box-shadow: var(--shadow-md);">
+                    中阴影
+                </div>
+                <div class="shadow-item" style="box-shadow: var(--shadow-lg);">
+                    大阴影
+                </div>
+            </div>
+        </section>
+        
+        <section id="components">
+            <h2>组件系统</h2>
+            <p>基于设计标记构建的可复用UI组件。</p>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <div class="component-preview">
+                        <button class="btn btn-primary">主要按钮</button>
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">主要按钮</div>
+                        <div class="component-description">用于强调页面中的主要操作。</div>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-preview">
+                        <button class="btn btn-secondary">次要按钮</button>
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">次要按钮</div>
+                        <div class="component-description">用于次要或辅助操作。</div>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-preview">
+                        <button class="btn btn-outline">轮廓按钮</button>
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">轮廓按钮</div>
+                        <div class="component-description">低强调按钮，通常用于取消或返回操作。</div>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-preview">
+                        <input type="text" class="input" placeholder="请输入文本">
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">输入框</div>
+                        <div class="component-description">用于收集用户输入的标准文本字段。</div>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-preview">
+                        <div class="card">
+                            <h3 style="margin-top: 0;">卡片标题</h3>
+                            <p style="margin-bottom: 0;">卡片内容区域，用于展示相关信息。</p>
+                        </div>
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">卡片</div>
+                        <div class="component-description">用于分组相关内容的容器。</div>
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <div class="component-preview">
+                        <div style="width: 100%;">
+                            <div class="message message-user">
+                                这是用户发送的消息示例。
+                            </div>
+                            <div class="message message-ai">
+                                这是AI助手回复的消息示例。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="component-info">
+                        <div class="component-name">消息框</div>
+                        <div class="component-description">用于对话界面，区分用户和AI的消息。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="AI-patterns">
+            <h2>AI交互模式</h2>
+            <p>专为AI产品设计的常见交互模式。</p>
+            
+            <h3>输入提示与建议</h3>
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <p>AI产品应提供清晰的输入提示，帮助用户了解系统能力与限制。</p>
+                <div style="background-color: var(--neutral-100); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                    <div style="color: var(--neutral-600); margin-bottom: var(--spacing-xs); font-size: var(--font-size-sm);">示例提示</div>
+                    <div>输入你的问题或描述你需要的帮助...</div>
+                </div>
+                <div style="display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
+                    <div style="background-color: var(--neutral-200); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md); font-size: var(--font-size-sm);">
+                        查找最近的咖啡店
+                    </div>
+                    <div style="background-color: var(--neutral-200); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md); font-size: var(--font-size-sm);">
+                        帮我写一篇工作报告
+                    </div>
+                    <div style="background-color: var(--neutral-200); padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md); font-size: var(--font-size-sm);">
+                        计算项目预算
+                    </div>
+                </div>
+            </div>
+            
+            <h3>加载状态</h3>
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <p>AI生成内容时的加载状态应提供适当的反馈，表明系统正在工作。</p>
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); background-color: var(--neutral-100); padding: var(--spacing-md); border-radius: var(--radius-md);">
+                    <div style="width: 24px; height: 24px; border: 2px solid var(--primary-200); border-top-color: var(--primary-600); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <div>AI正在生成回复...</div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            </div>
+            
+            <h3>错误处理</h3>
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <p>当AI无法理解或处理请求时，应提供清晰的错误反馈和解决建议。</p>
+                <div style="background-color: var(--error-100); border-left: 3px solid var(--error-500); padding: var(--spacing-md); border-radius: var(--radius-md);">
+                    <div style="font-weight: 500; color: var(--error-700); margin-bottom: var(--spacing-xs);">无法处理请求</div>
+                    <div style="color: var(--neutral-800); margin-bottom: var(--spacing-md);">抱歉，我无法理解您的请求。请尝试以下方法：</div>
+                    <ul style="margin: 0; padding-left: var(--spacing-lg); color: var(--neutral-800);">
+                        <li>使用更简洁明了的语言</li>
+                        <li>提供更多背景信息</li>
+                        <li>尝试重新表述您的问题</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="accessibility">
+            <h2>可访问性指南</h2>
+            <p>我们的设计系统遵循WCAG 2.1 AA标准，确保我们的产品对所有用户都是可访问的。</p>
+            
+            <div class="card" style="margin-bottom: var(--spacing-lg);">
+                <h3 style="margin-top: 0;">颜色对比度</h3>
+                <p>所有文本颜色与其背景色之间的对比度符合WCAG 2.1 AA标准：</p>
+                <ul>
+                    <li>普通文本（小于18pt）：对比度至少为4.5:1</li>
+                    <li>大号文本（18pt或以上）：对比度至少为3:1</li>
+                </ul>
+            </div>
+            
+            <div class="card" style="margin-bottom: var(--spacing-lg);">
+                <h3 style="margin-top: 0;">键盘可访问性</h3>
+                <p>所有交互元素都可以通过键盘访问和操作，并提供清晰的焦点状态指示。</p>
+            </div>
+            
+            <div class="card">
+                <h3 style="margin-top: 0;">屏幕阅读器支持</h3>
+                <p>所有组件都有适当的ARIA标签和角色，确保屏幕阅读器用户可以理解和操作界面。</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>AI产品设计系统 &copy; 2023</p>
+        </div>
+    </footer>
+</body>
+</html> 
